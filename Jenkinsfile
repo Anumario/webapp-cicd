@@ -8,11 +8,11 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t webapp-cicd .'
-            }
-        }
+        stage('Run Tests') {
+    steps {
+        sh 'docker run --rm webapp-cicd npm test'
+    }
+}
 
         stage('Run Tests') {
             steps {

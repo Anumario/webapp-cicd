@@ -1,6 +1,12 @@
 FROM node:18
 
+# Métadonnées pour GHCR
+LABEL org.opencontainers.image.source="https://github.com/Anumario/webapp-cicd"
+LABEL org.opencontainers.image.description="Webapp demo CI/CD com Jenkins e GHCR"
+LABEL org.opencontainers.image.licenses="MIT"
+
 WORKDIR /app
+
 
 # copier les manifestes en premier pour une mise en cache efficace
 COPY package*.json ./

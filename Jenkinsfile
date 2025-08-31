@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "anumario/webapp-cicd"   // troque pelo seu Docker Hub ou GHCR
-        VERSION = "${env.BUILD_NUMBER}"  // número de build do Jenkins
+        IMAGE   = "ghcr.io/anumario/webapp-cicd"  
+        VERSION = "${env.BUILD_NUMBER}"
     }
 
     stages {
@@ -25,13 +25,23 @@ pipeline {
             }
         }
 
-        stage('Run Container') {
+        stage('Push to GHCR') {
             steps {
-                // pour l'ancien conteneur (s'il existe) sans casser le pipeline
+                withCredentials([usernamePassword(credentialsId: 'ghcr-creds', usernameVariable: 'GHCR_USER', passwordVariable: 'GHCR_PAT')]) {
+                    sh '''
+                        echo "$GHCR_PAT" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+                        docker push ${IMAGE}:${VERSION}
+                        docker push ${IMAGE}:latest
+                        docker logout ghcr.io || true
+                    '''
+                }
+            }
+        }
+
+        stage('Run Container (local)') {
+            steps {
                 sh 'docker stop webapp || true'
                 sh 'docker rm webapp || true'
-
-                // Téléchargez toujours la version nouvellement construite
                 sh "docker run -d --name webapp -p 3000:3000 ${IMAGE}:${VERSION}"
             }
         }
@@ -43,7 +53,4 @@ pipeline {
         }
     }
 }
-  
-
-               
 

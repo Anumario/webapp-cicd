@@ -55,7 +55,7 @@ pipeline {
                           --docker-server=ghcr.io \
                           --docker-username="$GHCR_USER" \
                           --docker-password="$GHCR_PAT" \
-                          --docker-email="devnull@example.com" \
+                          --docker-email="anumariocorreia@gmail.com" \
                           --dry-run=client -o yaml | kubectl apply -f -
 
                         # 3) Appliquer les manifestes (ajuster les paths si nécessaire)
